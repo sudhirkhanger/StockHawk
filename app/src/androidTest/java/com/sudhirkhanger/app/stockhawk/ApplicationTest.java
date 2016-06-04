@@ -1,4 +1,4 @@
-package com.sam_chordas.android.stockhawk;
+package com.sudhirkhanger.app.stockhawk;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
