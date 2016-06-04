@@ -6,11 +6,9 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.ActionBar;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -22,19 +20,19 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.sudhirkhanger.app.stockhawk.R;
-import com.sudhirkhanger.app.stockhawk.model.QuoteColumns;
-import com.sudhirkhanger.app.stockhawk.model.QuoteProvider;
-import com.sudhirkhanger.app.stockhawk.adapter.QuoteCursorAdapter;
-import com.sudhirkhanger.app.stockhawk.touch_helper.RecyclerViewItemClickListener;
-import com.sudhirkhanger.app.stockhawk.utils.Utils;
-import com.sudhirkhanger.app.stockhawk.service.StockIntentService;
-import com.sudhirkhanger.app.stockhawk.service.StockTaskService;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
 import com.melnykov.fab.FloatingActionButton;
+import com.sudhirkhanger.app.stockhawk.R;
+import com.sudhirkhanger.app.stockhawk.adapter.QuoteCursorAdapter;
+import com.sudhirkhanger.app.stockhawk.model.QuoteColumns;
+import com.sudhirkhanger.app.stockhawk.model.QuoteProvider;
+import com.sudhirkhanger.app.stockhawk.service.StockIntentService;
+import com.sudhirkhanger.app.stockhawk.service.StockTaskService;
+import com.sudhirkhanger.app.stockhawk.touch_helper.RecyclerViewItemClickListener;
 import com.sudhirkhanger.app.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
+import com.sudhirkhanger.app.stockhawk.utils.Utils;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -52,18 +50,11 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private QuoteCursorAdapter mCursorAdapter;
     private Context mContext;
     private Cursor mCursor;
-    boolean isConnected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = this;
-        ConnectivityManager cm =
-                (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
         setContentView(R.layout.activity_my_stocks);
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
@@ -71,7 +62,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (savedInstanceState == null) {
             // Run the initialize task service so that some stocks appear upon an empty database
             mServiceIntent.putExtra("tag", "init");
-            if (isConnected) {
+            if (Utils.isConnected(mContext)) {
                 startService(mServiceIntent);
             } else {
                 networkToast();
@@ -98,7 +89,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isConnected) {
+                if (Utils.isConnected(mContext)) {
                     new MaterialDialog.Builder(mContext).title(R.string.symbol_search)
                             .content(R.string.content_test)
                             .inputType(InputType.TYPE_CLASS_TEXT)
@@ -138,7 +129,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mItemTouchHelper.attachToRecyclerView(recyclerView);
 
         mTitle = getTitle();
-        if (isConnected) {
+        if (Utils.isConnected(mContext)) {
             long period = 3600L;
             long flex = 10L;
             String periodicTag = "periodic";
