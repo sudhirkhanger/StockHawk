@@ -54,8 +54,10 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         mContext = this;
         setContentView(R.layout.activity_my_stocks);
+
         // The intent service is for executing immediate pulls from the Yahoo API
         // GCMTaskService can only schedule tasks, they cannot execute immediately
         mServiceIntent = new Intent(this, StockIntentService.class);
@@ -68,6 +70,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                 networkToast();
             }
         }
+
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
@@ -82,7 +85,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                     }
                 }));
         recyclerView.setAdapter(mCursorAdapter);
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.attachToRecyclerView(recyclerView);
@@ -170,7 +172,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.my_stocks, menu);
+        getMenuInflater().inflate(R.menu.menu_activity_my_stocks, menu);
         restoreActionBar();
         return true;
     }
