@@ -79,21 +79,6 @@ public class Utils {
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
-
-        String bid = null;
-
-        try {
-            bid = jsonObject.getString("Bid");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        if (bid == null) {
-            Log.d(LOG_TAG, "bid is null");
-        } else {
-            Log.d(LOG_TAG, "bid is not null " + bid);
-        }
-
         try {
             String change = jsonObject.getString("Change");
             builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
