@@ -36,14 +36,33 @@ public class Utils {
                 if (count == 1) {
                     jsonObject = jsonObject.getJSONObject("results")
                             .getJSONObject("quote");
-                    batchOperations.add(buildBatchOperation(jsonObject));
+
+                    ContentProviderOperation contentProviderOperation =
+                            buildBatchOperation(jsonObject);
+
+                    if (contentProviderOperation != null) {
+                        batchOperations.add(contentProviderOperation);
+                    } else {
+                        Log.d(LOG_TAG, "quoteJsonToContentVals: Stock not found");
+                    }
+
                 } else {
-                    resultsArray = jsonObject.getJSONObject("results").getJSONArray("quote");
+                    resultsArray = jsonObject.getJSONObject("results")
+                            .getJSONArray("quote");
 
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
-                            batchOperations.add(buildBatchOperation(jsonObject));
+
+                            ContentProviderOperation contentProviderOperation =
+                                    buildBatchOperation(jsonObject);
+
+                            if (contentProviderOperation != null) {
+                                batchOperations.add(contentProviderOperation);
+                            } else {
+                                Log.d(LOG_TAG, "quoteJsonToContentVals: Stock not found");
+                            }
+
                         }
                     }
                 }
@@ -79,24 +98,39 @@ public class Utils {
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
-        try {
-            String change = jsonObject.getString("Change");
-            builder.withValue(QuoteColumns.SYMBOL, jsonObject.getString("symbol"));
-            builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(jsonObject.getString("Bid")));
-            builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                    jsonObject.getString("ChangeinPercent"), true));
-            builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
-            builder.withValue(QuoteColumns.ISCURRENT, 1);
-            if (change.charAt(0) == '-') {
-                builder.withValue(QuoteColumns.ISUP, 0);
-            } else {
-                builder.withValue(QuoteColumns.ISUP, 1);
-            }
 
+        String bidPrice = null;
+        String symbol = "";
+        try {
+            bidPrice = jsonObject.getString("Bid");
+            symbol = jsonObject.getString("symbol");
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return builder.build();
+
+        if (bidPrice == null || bidPrice.equals("null")) {
+            Log.d(LOG_TAG, "buildBatchOperation: " + symbol + " not found");
+            return null;
+        } else {
+            try {
+                String change = jsonObject.getString("Change");
+                builder.withValue(QuoteColumns.SYMBOL, symbol);
+                builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(bidPrice));
+                builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
+                        jsonObject.getString("ChangeinPercent"), true));
+                builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
+                builder.withValue(QuoteColumns.ISCURRENT, 1);
+                if (change.charAt(0) == '-') {
+                    builder.withValue(QuoteColumns.ISUP, 0);
+                } else {
+                    builder.withValue(QuoteColumns.ISUP, 1);
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return builder.build();
+        }
     }
 
     public static boolean isConnected(Context context) {

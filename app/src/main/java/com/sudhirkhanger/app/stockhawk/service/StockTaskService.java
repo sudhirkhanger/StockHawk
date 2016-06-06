@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -48,6 +49,7 @@ public class StockTaskService extends GcmTaskService {
                 .url(url)
                 .build();
 
+        Log.d(LOG_TAG, url);
         Response response = client.newCall(request).execute();
         return response.body().string();
     }
@@ -126,8 +128,15 @@ public class StockTaskService extends GcmTaskService {
                         mContext.getContentResolver().update(QuoteProvider.Quotes.CONTENT_URI, contentValues,
                                 null, null);
                     }
-                    mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                            Utils.quoteJsonToContentVals(getResponse));
+
+                    if (Utils.quoteJsonToContentVals(getResponse) != null) {
+                        mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                                Utils.quoteJsonToContentVals(getResponse));
+                    } else {
+                        (Toast.makeText(mContext, "Stock not found",
+                                Toast.LENGTH_LONG)).show();
+                    }
+
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(LOG_TAG, "Error applying batch insert", e);
                 }
