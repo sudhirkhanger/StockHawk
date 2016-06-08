@@ -25,6 +25,7 @@ public class Utils {
     public static boolean showPercent = true;
 
     public static ArrayList quoteJsonToContentVals(String JSON) {
+        Log.d(LOG_TAG, "quoteJsonToContentVals called");
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
@@ -43,7 +44,10 @@ public class Utils {
                     if (contentProviderOperation != null) {
                         batchOperations.add(contentProviderOperation);
                     } else {
-                        Log.d(LOG_TAG, "quoteJsonToContentVals: Stock not found");
+                        Log.d(LOG_TAG, "quoteJsonToContentVals: " +
+                                jsonObject.getString("symbol") +
+                                " not found");
+                        batchOperations = null;
                     }
 
                 } else {
@@ -60,7 +64,10 @@ public class Utils {
                             if (contentProviderOperation != null) {
                                 batchOperations.add(contentProviderOperation);
                             } else {
-                                Log.d(LOG_TAG, "quoteJsonToContentVals: Stock not found");
+                                Log.d(LOG_TAG, "quoteJsonToContentVals: " +
+                                        jsonObject.getString("symbol") +
+                                        " not found");
+                                batchOperations = null;
                             }
 
                         }
@@ -96,6 +103,7 @@ public class Utils {
     }
 
     public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
+        Log.d(LOG_TAG, "buildBatchOperation called");
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
 

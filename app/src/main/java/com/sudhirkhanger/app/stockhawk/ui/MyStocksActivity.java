@@ -1,12 +1,15 @@
 package com.sudhirkhanger.app.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -153,13 +156,34 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             // are updated.
             GcmNetworkManager.getInstance(this).schedule(periodicTask);
         }
+
     }
 
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String message = intent.getStringExtra("stock_msg");
+            Toast toast =
+                    Toast.makeText(MyStocksActivity.this, message,
+                            Toast.LENGTH_LONG);
+            toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
+            toast.show();
+        }
+    };
 
     @Override
     public void onResume() {
         super.onResume();
+        LocalBroadcastManager.getInstance(this)
+                .registerReceiver(mMessageReceiver, new IntentFilter("stock_not_found"));
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this)
+                .unregisterReceiver(mMessageReceiver);
     }
 
     public void networkToast() {

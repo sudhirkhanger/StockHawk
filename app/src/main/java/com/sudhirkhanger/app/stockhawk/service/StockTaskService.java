@@ -2,12 +2,13 @@ package com.sudhirkhanger.app.stockhawk.service;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.RemoteException;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
@@ -132,9 +133,14 @@ public class StockTaskService extends GcmTaskService {
                     if (Utils.quoteJsonToContentVals(getResponse) != null) {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
+                        Log.d(LOG_TAG, "Intent not sent");
                     } else {
-                        (Toast.makeText(mContext, "Stock not found",
-                                Toast.LENGTH_LONG)).show();
+                        Log.d(LOG_TAG, "Intent sent");
+                        result = GcmNetworkManager.RESULT_FAILURE;
+                        Intent intent = new Intent("stock_not_found");
+                        intent.putExtra("stock_msg", "Stock Not Found");
+                        LocalBroadcastManager.getInstance(this)
+                                .sendBroadcast(intent);
                     }
 
                 } catch (RemoteException | OperationApplicationException e) {
