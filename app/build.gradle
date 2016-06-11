@@ -27,7 +27,6 @@ repositories {
 dependencies {
 
     compile 'com.google.android.gms:play-services-gcm:9.0.2'
-    compile 'com.squareup.okhttp3:okhttp:3.3.0'
     apt 'net.simonvt.schematic:schematic-compiler:0.6.3'
     compile 'net.simonvt.schematic:schematic:0.6.3'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
@@ -37,4 +36,8 @@ dependencies {
     }
     compile 'com.jakewharton:butterknife:8.0.1'
     apt 'com.jakewharton:butterknife-compiler:8.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.3.1'
+    compile 'com.squareup.retrofit2:retrofit:2.0.2'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.2'
+    provided 'org.glassfish:javax.annotation:10.0-b28'
 }
