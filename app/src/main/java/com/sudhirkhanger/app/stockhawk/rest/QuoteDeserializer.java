@@ -16,6 +16,7 @@
 
 package com.sudhirkhanger.app.stockhawk.rest;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -30,6 +31,9 @@ public class QuoteDeserializer implements JsonDeserializer<Stock.StockItem> {
                                        Type typeOfT,
                                        JsonDeserializationContext context)
             throws JsonParseException {
-        return null;
+
+        JsonElement quote = json.getAsJsonObject().get("quote");
+
+        return new Gson().fromJson(quote, Stock.StockItem.class);
     }
 }

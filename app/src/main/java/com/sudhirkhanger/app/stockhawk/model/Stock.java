@@ -34,10 +34,10 @@ public class Stock {
 
     public static class StockItem {
 
-        @SerializedName("Date")
+        @SerializedName("date")
         String date;
 
-        @SerializedName("Close")
+        @SerializedName("close")
         String close;
 
         @Override

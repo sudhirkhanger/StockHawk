@@ -23,10 +23,14 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.sudhirkhanger.app.stockhawk.R;
 import com.sudhirkhanger.app.stockhawk.model.Stock;
+import com.sudhirkhanger.app.stockhawk.rest.QuoteDeserializer;
 import com.sudhirkhanger.app.stockhawk.rest.StockService;
 
+import java.io.IOException;
 import java.util.List;
 
 import butterknife.BindView;
@@ -59,9 +63,13 @@ public class MyStockGraphActivity extends Activity {
 
         String symbol = intent.getStringExtra("stock_symbol");
 
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Stock.StockItem.class, new QuoteDeserializer())
+                .create();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
         StockService.StockYql stockYql = retrofit.create(StockService.StockYql.class);
@@ -78,17 +86,20 @@ public class MyStockGraphActivity extends Activity {
 
                 try {
                     mStock = response.body();
-                    Log.d("MyStockGraphActivity", response.toString());
-                } catch (NullPointerException e) {
-                    Toast toast = null;
-                    if (response.code() == 401) {
-                        toast = Toast.makeText(MyStockGraphActivity.this, "Unauthenticated", Toast.LENGTH_SHORT);
-                    } else if (response.code() >= 400) {
-                        toast = Toast.makeText(MyStockGraphActivity.this, "Client Error " + response.code()
-                                + " " + response.message(), Toast.LENGTH_SHORT);
-                    }
-                    toast.show();
+                    Log.d("MyStockGraphActivity", response.errorBody().string());
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+//                } catch (NullPointerException e) {
+//                    Toast toast = null;
+//                    if (response.code() == 401) {
+//                        toast = Toast.makeText(MyStockGraphActivity.this, "Unauthenticated", Toast.LENGTH_SHORT);
+//                    } else if (response.code() >= 400) {
+//                        toast = Toast.makeText(MyStockGraphActivity.this, "Client Error " + response.code()
+//                                + " " + response.message(), Toast.LENGTH_SHORT);
+//                    }
+//                    toast.show();
+//                }
 //                mStockItem = mStock.getStockItems();
 //                mTextView.setText(mStockItem.get(0).getClose());
             }
@@ -101,4 +112,16 @@ public class MyStockGraphActivity extends Activity {
 
     }
 
+
+//    @Override
+//    public void onResponse(Response<User> response, Retrofit retrofit) {
+//
+//        if (!response.isSuccess()) {
+//            try {
+//                Log.e("LOG", "Retrofit Response: " + response.errorBody().string());
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        }
+//    }
 }
