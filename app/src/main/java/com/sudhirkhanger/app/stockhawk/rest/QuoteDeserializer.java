@@ -16,24 +16,49 @@
 
 package com.sudhirkhanger.app.stockhawk.rest;
 
-import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.sudhirkhanger.app.stockhawk.model.Stock;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 
-public class QuoteDeserializer implements JsonDeserializer<Stock.StockItem> {
+public class QuoteDeserializer implements JsonDeserializer<Stock> {
     @Override
-    public Stock.StockItem deserialize(JsonElement json,
-                                       Type typeOfT,
-                                       JsonDeserializationContext context)
+    public Stock deserialize(JsonElement json,
+                             Type typeOfT,
+                             JsonDeserializationContext context)
             throws JsonParseException {
 
-        JsonElement quote = json.getAsJsonObject().get("quote");
+        ArrayList<Stock.StockItem> stockArrayList = new ArrayList<>();
 
-        return new Gson().fromJson(quote, Stock.StockItem.class);
+        try {
+            JsonObject queryObject = json.getAsJsonObject();
+            JsonElement quoteElement = queryObject.get("quote");
+            JsonArray quoteArray = quoteElement.getAsJsonArray();
+
+            for (int i = 0; i < quoteArray.size(); i++) {
+                final JsonElement stockItemElement = quoteArray.get(i);
+
+                final JsonElement dateElement = stockItemElement.getAsJsonObject().get("Date");
+                final JsonElement closeElement = stockItemElement.getAsJsonObject().get("Close");
+                final String date = dateElement.getAsString();
+                final String close = closeElement.getAsString();
+
+                final Stock.StockItem stockItem = new Stock.StockItem(date, close);
+                stockArrayList.add(stockItem);
+            }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
+        Stock stock = new Stock();
+        stock.setStockItems(stockArrayList);
+
+        return stock;
     }
 }

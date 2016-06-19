@@ -16,13 +16,12 @@
 
 package com.sudhirkhanger.app.stockhawk.model;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 
 public class Stock {
 
     List<StockItem> mStockItems;
+
 
     public List<StockItem> getStockItems() {
         return mStockItems;
@@ -34,34 +33,36 @@ public class Stock {
 
     public static class StockItem {
 
-        @SerializedName("date")
-        String date;
+        String Date;
+        String Close;
 
-        @SerializedName("close")
-        String close;
+        public StockItem(String date, String close) {
+            Date = date;
+            Close = close;
+        }
+
+        public String getDate() {
+            return Date;
+        }
+
+        public void setDate(String date) {
+            this.Date = date;
+        }
+
+        public String getClose() {
+            return Close;
+        }
+
+        public void setClose(String close) {
+            this.Close = close;
+        }
 
         @Override
         public String toString() {
             return "StockItem{" +
-                    "date='" + date + '\'' +
-                    ", close='" + close + '\'' +
+                    "Date='" + Date + '\'' +
+                    ", Close='" + Close + '\'' +
                     '}';
-        }
-
-        public String getDate() {
-            return date;
-        }
-
-        public void setDate(String date) {
-            this.date = date;
-        }
-
-        public String getClose() {
-            return close;
-        }
-
-        public void setClose(String close) {
-            this.close = close;
         }
     }
 }
