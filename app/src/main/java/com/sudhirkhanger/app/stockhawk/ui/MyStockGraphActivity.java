@@ -83,12 +83,11 @@ public class MyStockGraphActivity extends Activity {
             public void onResponse(Call<Stock> call, Response<Stock> response) {
 
                 try {
-                    Log.d("MyStockGraphActivity", "Try");
                     mStock = response.body();
                     mStockItem = mStock.getStockItems();
+
                     Log.d("MyStockGraphActivity", "Size " + mStockItem.size());
                 } catch (NullPointerException e) {
-                    Log.d("MyStockGraphActivity", "Catch");
 //                    Toast toast = null;
                     if (response.code() == 401) {
                         Log.d("MyStockGraphActivity", " 401 Unauthenticated");

@@ -37,8 +37,16 @@ public class QuoteDeserializer implements JsonDeserializer<Stock> {
         ArrayList<Stock.StockItem> stockArrayList = new ArrayList<>();
 
         try {
-            JsonObject queryObject = json.getAsJsonObject();
-            JsonElement quoteElement = queryObject.get("quote");
+            JsonObject queryObject = json
+                    .getAsJsonObject()
+                    .get("query")
+                    .getAsJsonObject();
+
+            JsonElement quoteElement = queryObject
+                    .get("result")
+                    .getAsJsonObject()
+                    .get("quote");
+
             JsonArray quoteArray = quoteElement.getAsJsonArray();
 
             for (int i = 0; i < quoteArray.size(); i++) {
