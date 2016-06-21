@@ -43,7 +43,7 @@ public class QuoteDeserializer implements JsonDeserializer<Stock> {
                     .getAsJsonObject();
 
             JsonElement quoteElement = queryObject
-                    .get("result")
+                    .get("results")
                     .getAsJsonObject()
                     .get("quote");
 
