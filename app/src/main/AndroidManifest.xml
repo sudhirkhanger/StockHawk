@@ -45,8 +45,8 @@
 
         <activity
             android:name=".ui.MyStockGraphActivity"
-            android:label="@string/title_activity_my_stock_graph"
-            android:parentActivityName=".ui.MyStocksActivity">
+            android:parentActivityName=".ui.MyStocksActivity"
+        android:theme="@style/Theme.AppCompat.Light">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity"/>
