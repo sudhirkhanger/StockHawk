@@ -160,5 +160,6 @@ public class StockTaskService extends GcmTaskService {
         Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
                 .setPackage(mContext.getPackageName());
         mContext.sendBroadcast(dataUpdatedIntent);
+        Log.d(LOG_TAG, "updateWidgets(): called");
     }
 }

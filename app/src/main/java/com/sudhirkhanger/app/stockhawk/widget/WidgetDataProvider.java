@@ -48,12 +48,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
 //        }
 //    }
 
-//    ArrayList<WhateverTypeYouWant> mArrayList = new ArrayList<WhateverTypeYouWant>();
-//for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
-//    // The Cursor is now set to the right position
-//    mArrayList.add(mCursor.getWhateverTypeYouWant(WHATEVER_COLUMN_INDEX_YOU_WANT));
-//}
-
     private void intiData() {
         collection.clear();
         ContentResolver contentResolver = mContext.getContentResolver();
@@ -64,10 +58,11 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
                 null,
                 null);
 
-        if (cursor !=null) {
+        if (cursor != null) {
             for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
                 collection.add(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
             }
+            cursor.close();
         }
     }
 
