@@ -41,7 +41,7 @@
         <provider
             android:name=".model.generated.QuoteProvider"
             android:authorities="com.sudhirkhanger.app.stockhawk.model.QuoteProvider"
-            android:exported="false"/>
+            android:exported="true"/>
 
         <activity
             android:name=".ui.MyStockGraphActivity"
@@ -52,9 +52,11 @@
                 android:value="com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity"/>
         </activity>
 
-        <receiver android:name=".widget.StockCollectionWidget">
+        <receiver
+            android:name=".widget.StockCollectionWidget">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.example.android.sunshine.app.ACTION_DATA_UPDATED"/>
             </intent-filter>
 
             <meta-data
@@ -62,8 +64,13 @@
                 android:resource="@xml/stock_collection_widget_info"/>
         </receiver>
 
-        <service android:name=".widget.WidgetService"
-                 android:permission="android.permission.BIND_REMOTEVIEWS"/>
+        <service
+            android:name=".widget.WidgetService"
+            android:permission="android.permission.BIND_REMOTEVIEWS"/>
+
+        <service
+            android:name=".widget.StockWidgetIntentService">
+        </service>
     </application>
 
 </manifest>

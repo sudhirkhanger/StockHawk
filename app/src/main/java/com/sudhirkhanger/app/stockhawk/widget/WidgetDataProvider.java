@@ -16,11 +16,16 @@
 
 package com.sudhirkhanger.app.stockhawk.widget;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+
+import com.sudhirkhanger.app.stockhawk.model.QuoteColumns;
+import com.sudhirkhanger.app.stockhawk.model.QuoteProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,10 +41,33 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         mIntent = intent;
     }
 
+//    private void intiData() {
+//        collection.clear();
+//        for (int i = 1; i <= 10; i++) {
+//            collection.add("ListView Item " + i);
+//        }
+//    }
+
+//    ArrayList<WhateverTypeYouWant> mArrayList = new ArrayList<WhateverTypeYouWant>();
+//for(mCursor.moveToFirst(); !mCursor.isAfterLast(); mCursor.moveToNext()) {
+//    // The Cursor is now set to the right position
+//    mArrayList.add(mCursor.getWhateverTypeYouWant(WHATEVER_COLUMN_INDEX_YOU_WANT));
+//}
+
     private void intiData() {
         collection.clear();
-        for (int i = 1; i <= 10; i++) {
-            collection.add("ListView Item " + i);
+        ContentResolver contentResolver = mContext.getContentResolver();
+
+        Cursor cursor = contentResolver.query(QuoteProvider.Quotes.CONTENT_URI,
+                new String[]{QuoteColumns.SYMBOL, QuoteColumns.BIDPRICE},
+                null,
+                null,
+                null);
+
+        if (cursor !=null) {
+            for (cursor.moveToFirst(); !cursor.isAfterLast(); cursor.moveToNext()) {
+                collection.add(cursor.getString(cursor.getColumnIndex(QuoteColumns.SYMBOL)));
+            }
         }
     }
 

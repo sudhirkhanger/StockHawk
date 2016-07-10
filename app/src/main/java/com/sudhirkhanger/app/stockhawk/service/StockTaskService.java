@@ -133,10 +133,8 @@ public class StockTaskService extends GcmTaskService {
                     if (Utils.quoteJsonToContentVals(getResponse) != null) {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse));
-                        Log.d(LOG_TAG, "Intent not sent");
+                        updateWidgets();
                     } else {
-                        Log.d(LOG_TAG, "Intent sent");
-                        result = GcmNetworkManager.RESULT_FAILURE;
                         Intent intent = new Intent("stock_not_found");
                         intent.putExtra("stock_msg", "Stock Not Found");
                         LocalBroadcastManager.getInstance(this)
@@ -154,4 +152,13 @@ public class StockTaskService extends GcmTaskService {
         return result;
     }
 
+    public static final String ACTION_DATA_UPDATED =
+            "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
+
+    private void updateWidgets() {
+        // Setting the package ensures that only components in our app will receive the broadcast
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(mContext.getPackageName());
+        mContext.sendBroadcast(dataUpdatedIntent);
+    }
 }
