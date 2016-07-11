@@ -1,7 +1,9 @@
 package com.sudhirkhanger.app.stockhawk.ui;
 
 import android.app.LoaderManager;
+import android.appwidget.AppWidgetManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -16,7 +18,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ import com.sudhirkhanger.app.stockhawk.service.StockTaskService;
 import com.sudhirkhanger.app.stockhawk.touch_helper.RecyclerViewItemClickListener;
 import com.sudhirkhanger.app.stockhawk.touch_helper.SimpleItemTouchHelperCallback;
 import com.sudhirkhanger.app.stockhawk.utils.Utils;
+import com.sudhirkhanger.app.stockhawk.widget.StockCollectionWidget;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -246,15 +248,15 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
         mCursor = data;
-        updateWidgets();
+//        updateWidgets();
 
-//        ComponentName name = new ComponentName(this, StockCollectionWidget.class);
-//        int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
-//
-//        Intent intent = new Intent(this, StockCollectionWidget.class);
-//        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
-//        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
-//        sendBroadcast(intent);
+        ComponentName name = new ComponentName(this, StockCollectionWidget.class);
+        int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
+
+        Intent intent = new Intent(this, StockCollectionWidget.class);
+        intent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
+        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
+        sendBroadcast(intent);
     }
 
     @Override
@@ -262,15 +264,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mCursorAdapter.swapCursor(null);
     }
 
-    public static final String ACTION_DATA_UPDATED =
-            "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
-
-    private void updateWidgets() {
-        // Setting the package ensures that only components in our app will receive the broadcast
-        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
-                .setPackage(mContext.getPackageName());
-        mContext.sendBroadcast(dataUpdatedIntent);
-        Log.d("MyStocksActivity", "updateWidgets(): called");
-    }
+//    public static final String ACTION_DATA_UPDATED =
+//            "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
+//
+//    private void updateWidgets() {
+//        // Setting the package ensures that only components in our app will receive the broadcast
+//        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+//                .setPackage(getPackageName());
+////        mContext.sendBroadcast(dataUpdatedIntent);
+//        sendBroadcast(dataUpdatedIntent);
+//        Log.d("MyStocksActivity", "updateWidgets(): called");
+//    }
 
 }

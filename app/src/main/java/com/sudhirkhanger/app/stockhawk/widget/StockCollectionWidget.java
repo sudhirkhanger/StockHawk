@@ -24,8 +24,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity;
-
 /**
  * Implementation of App Widget functionality.
  */
@@ -97,10 +95,10 @@ public class StockCollectionWidget extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Log.d(LOG_TAG, "onReceieve(): reached");
         super.onReceive(context, intent);
-        if (MyStocksActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+//        if (MyStocksActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
 //        if (StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             context.startService(new Intent(context, StockWidgetIntentService.class));
-        }
+//        }
     }
 }
 
