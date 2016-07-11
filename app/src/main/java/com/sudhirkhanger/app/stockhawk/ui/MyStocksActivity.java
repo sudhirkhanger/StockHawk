@@ -115,19 +115,19 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                     Cursor c = getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                                             new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
                                             new String[]{capitalizeInput}, null);
-                                    if (c.getCount() != 0) {
+                                    if (c != null && c.getCount() != 0) {
                                         Toast toast =
                                                 Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
                                                         Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();
-                                        return;
                                     } else {
                                         // Add the stock to DB
                                         mServiceIntent.putExtra("tag", "add");
                                         mServiceIntent.putExtra("symbol", capitalizeInput);
                                         startService(mServiceIntent);
                                     }
+                                    if (c != null) c.close();
                                 }
                             })
                             .show();

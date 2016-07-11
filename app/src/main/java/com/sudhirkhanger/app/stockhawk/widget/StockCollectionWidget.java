@@ -76,7 +76,10 @@ public class StockCollectionWidget extends AppWidgetProvider {
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         context.startService(new Intent(context, StockWidgetIntentService.class));
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+//        for (int appWidgetId : appWidgetIds) {
+//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
+//        }
+//        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
