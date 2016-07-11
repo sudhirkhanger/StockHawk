@@ -79,7 +79,7 @@ public class StockCollectionWidget extends AppWidgetProvider {
 //        for (int appWidgetId : appWidgetIds) {
 //            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
 //        }
-//        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
