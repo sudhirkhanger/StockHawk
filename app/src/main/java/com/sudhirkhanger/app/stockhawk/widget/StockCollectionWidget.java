@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity;
 
@@ -29,6 +30,8 @@ import com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity;
  * Implementation of App Widget functionality.
  */
 public class StockCollectionWidget extends AppWidgetProvider {
+
+    private static final String LOG_TAG = StockCollectionWidget.class.getSimpleName();
 
 //    @Override
 //    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -75,21 +78,24 @@ public class StockCollectionWidget extends AppWidgetProvider {
 
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
+        Log.d(LOG_TAG, "onUpdate(): reached");
         context.startService(new Intent(context, StockWidgetIntentService.class));
 //        for (int appWidgetId : appWidgetIds) {
 //            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
 //        }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
+//        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
     public void onAppWidgetOptionsChanged(Context context, AppWidgetManager appWidgetManager,
                                           int appWidgetId, Bundle newOptions) {
+        Log.d(LOG_TAG, "onAppWidgetOptionsChanged(): reached");
         context.startService(new Intent(context, StockWidgetIntentService.class));
     }
 
     @Override
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
+        Log.d(LOG_TAG, "onReceieve(): reached");
         super.onReceive(context, intent);
         if (MyStocksActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
 //        if (StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())) {

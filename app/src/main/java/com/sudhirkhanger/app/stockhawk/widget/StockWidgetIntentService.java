@@ -20,7 +20,6 @@ public class StockWidgetIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(this);
         int[] appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(this,
                 StockCollectionWidget.class));
