@@ -41,13 +41,6 @@ public class WidgetDataProvider implements RemoteViewsService.RemoteViewsFactory
         mIntent = intent;
     }
 
-//    private void intiData() {
-//        collection.clear();
-//        for (int i = 1; i <= 10; i++) {
-//            collection.add("ListView Item " + i);
-//        }
-//    }
-
     private void intiData() {
         collection.clear();
         ContentResolver contentResolver = mContext.getContentResolver();

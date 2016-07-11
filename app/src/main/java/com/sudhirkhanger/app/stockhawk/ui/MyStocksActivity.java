@@ -42,6 +42,9 @@ import com.sudhirkhanger.app.stockhawk.widget.StockCollectionWidget;
 
 public class MyStocksActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final String ACTION_DATA_UPDATED =
+            "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
+
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
      */
@@ -248,8 +251,16 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mCursorAdapter.swapCursor(data);
         mCursor = data;
-//        updateWidgets();
+        updateWidgets();
 
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mCursorAdapter.swapCursor(null);
+    }
+
+    private void updateWidgets() {
         ComponentName name = new ComponentName(this, StockCollectionWidget.class);
         int[] ids = AppWidgetManager.getInstance(this).getAppWidgetIds(name);
 
@@ -258,22 +269,5 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, ids);
         sendBroadcast(intent);
     }
-
-    @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-        mCursorAdapter.swapCursor(null);
-    }
-
-//    public static final String ACTION_DATA_UPDATED =
-//            "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
-//
-//    private void updateWidgets() {
-//        // Setting the package ensures that only components in our app will receive the broadcast
-//        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
-//                .setPackage(getPackageName());
-////        mContext.sendBroadcast(dataUpdatedIntent);
-//        sendBroadcast(dataUpdatedIntent);
-//        Log.d("MyStocksActivity", "updateWidgets(): called");
-//    }
 
 }

@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity;
+
 /**
  * Implementation of App Widget functionality.
  */
@@ -31,57 +33,10 @@ public class StockCollectionWidget extends AppWidgetProvider {
 
     private static final String LOG_TAG = StockCollectionWidget.class.getSimpleName();
 
-//    @Override
-//    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
-//        // There may be multiple widgets active, so update all of them
-//        for (int appWidgetId : appWidgetIds) {
-//            // Construct the RemoteViews object
-//            RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.stock_collection_widget);
-//
-//            // Set up the collection
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-//                setRemoteAdapter(context, views);
-//            } else {
-//                setRemoteAdapterV11(context, views);
-//            }
-//
-//            // Instruct the widget manager to update the widget
-//            appWidgetManager.updateAppWidget(appWidgetId, views);
-//
-//        }
-//        super.onUpdate(context, appWidgetManager, appWidgetIds);
-//    }
-
-//    /**
-//     * Sets the remote adapter used to fill in the list items
-//     *
-//     * @param views RemoteViews to set the RemoteAdapter
-//     */
-//    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-//    private static void setRemoteAdapter(Context context, @NonNull final RemoteViews views) {
-//        views.setRemoteAdapter(R.id.widget_list,
-//                new Intent(context, WidgetService.class));
-//    }
-//
-//    /**
-//     * Sets the remote adapter used to fill in the list items
-//     *
-//     * @param views RemoteViews to set the RemoteAdapter
-//     */
-//    @SuppressWarnings("deprecation")
-//    private static void setRemoteAdapterV11(Context context, @NonNull final RemoteViews views) {
-//        views.setRemoteAdapter(0, R.id.widget_list,
-//                new Intent(context, WidgetService.class));
-//    }
-
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         Log.d(LOG_TAG, "onUpdate(): reached");
         context.startService(new Intent(context, StockWidgetIntentService.class));
-//        for (int appWidgetId : appWidgetIds) {
-//            appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetId, R.id.widget_list);
-//        }
-//        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
@@ -95,10 +50,9 @@ public class StockCollectionWidget extends AppWidgetProvider {
     public void onReceive(@NonNull Context context, @NonNull Intent intent) {
         Log.d(LOG_TAG, "onReceieve(): reached");
         super.onReceive(context, intent);
-//        if (MyStocksActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
-//        if (StockTaskService.ACTION_DATA_UPDATED.equals(intent.getAction())) {
+        if (MyStocksActivity.ACTION_DATA_UPDATED.equals(intent.getAction())) {
             context.startService(new Intent(context, StockWidgetIntentService.class));
-//        }
+        }
     }
 }
 
