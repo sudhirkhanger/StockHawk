@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.Theme;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.PeriodicTask;
 import com.google.android.gms.gcm.Task;
@@ -135,6 +136,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                     if (c != null) c.close();
                                 }
                             })
+                            .theme(Theme.LIGHT)
                             .show();
                 } else {
                     networkToast();
