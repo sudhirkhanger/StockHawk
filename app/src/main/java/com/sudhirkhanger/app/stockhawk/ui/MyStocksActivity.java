@@ -18,6 +18,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.InputType;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,14 +46,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     public static final String ACTION_DATA_UPDATED =
             "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
-
-    /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
-     */
-
-    /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
-     */
     private CharSequence mTitle;
     private Intent mServiceIntent;
     private ItemTouchHelper mItemTouchHelper;
@@ -60,6 +53,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private QuoteCursorAdapter mCursorAdapter;
     private Context mContext;
     private Cursor mCursor;
+    private static final String LOG_TAG = MyStocksActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +69,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
             // Run the initialize task service so that some stocks appear upon an empty database
             mServiceIntent.putExtra("tag", "init");
             if (Utils.isConnected(mContext)) {
+                Log.d(LOG_TAG, "StockTaskService Intent Sent");
                 startService(mServiceIntent);
             } else {
                 networkToast();
@@ -254,7 +249,6 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mCursorAdapter.swapCursor(data);
         mCursor = data;
         updateWidgets();
-
     }
 
     @Override

@@ -71,6 +71,7 @@ public class StockTaskService extends GcmTaskService {
             e.printStackTrace();
         }
         if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+            Log.d(LOG_TAG, "init or periodic");
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
                     new String[]{"Distinct " + QuoteColumns.SYMBOL}, null,
@@ -84,6 +85,7 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             } else if (initQueryCursor != null) {
+                Log.d(LOG_TAG, "initQueryCursor is not null");
                 DatabaseUtils.dumpCursor(initQueryCursor);
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
@@ -99,6 +101,7 @@ public class StockTaskService extends GcmTaskService {
                 }
             }
         } else if (params.getTag().equals("add")) {
+            Log.d(LOG_TAG, "param add");
             isUpdate = false;
             // get symbol from params.getExtra and build query
             String stockInput = params.getExtras().getString("symbol");
@@ -117,7 +120,9 @@ public class StockTaskService extends GcmTaskService {
         int result = GcmNetworkManager.RESULT_FAILURE;
 
         if (urlStringBuilder != null) {
+            Log.d(LOG_TAG, "urlStringBuilder not null always ");
             urlString = urlStringBuilder.toString();
+            Log.d(LOG_TAG, "urlString " + urlString);
             try {
                 getResponse = fetchData(urlString);
                 result = GcmNetworkManager.RESULT_SUCCESS;
@@ -130,9 +135,10 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
 
-                    if (Utils.quoteJsonToContentVals(getResponse) != null) {
+                    if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
+                        Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                                Utils.quoteJsonToContentVals(getResponse));
+                                Utils.quoteJsonToContentVals(getResponse, mContext));
                     } else {
                         Intent intent = new Intent("stock_not_found");
                         intent.putExtra("stock_msg", "Stock Not Found");

@@ -24,8 +24,7 @@ public class Utils {
 
     public static boolean showPercent = true;
 
-    public static ArrayList quoteJsonToContentVals(String JSON) {
-        Log.d(LOG_TAG, "quoteJsonToContentVals called");
+    public static ArrayList quoteJsonToContentVals(String JSON, Context context) {
         ArrayList<ContentProviderOperation> batchOperations = new ArrayList<>();
         JSONObject jsonObject = null;
         JSONArray resultsArray = null;
@@ -38,10 +37,13 @@ public class Utils {
                     jsonObject = jsonObject.getJSONObject("results")
                             .getJSONObject("quote");
 
+                    Log.d(LOG_TAG, "jsonObject is " + jsonObject.toString());
+
                     ContentProviderOperation contentProviderOperation =
-                            buildBatchOperation(jsonObject);
+                            buildBatchOperation(jsonObject, context);
 
                     if (contentProviderOperation != null) {
+                        Log.d(LOG_TAG, "quoteJsonToContentVals() reached 45");
                         batchOperations.add(contentProviderOperation);
                     } else {
                         Log.d(LOG_TAG, "quoteJsonToContentVals: " +
@@ -54,14 +56,17 @@ public class Utils {
                     resultsArray = jsonObject.getJSONObject("results")
                             .getJSONArray("quote");
 
+                    Log.d(LOG_TAG, "jsonObject is " + resultsArray.toString());
+
                     if (resultsArray != null && resultsArray.length() != 0) {
                         for (int i = 0; i < resultsArray.length(); i++) {
                             jsonObject = resultsArray.getJSONObject(i);
 
                             ContentProviderOperation contentProviderOperation =
-                                    buildBatchOperation(jsonObject);
+                                    buildBatchOperation(jsonObject, context);
 
                             if (contentProviderOperation != null) {
+                                Log.d(LOG_TAG, "quoteJsonToContentVals() reached 66");
                                 batchOperations.add(contentProviderOperation);
                             } else {
                                 Log.d(LOG_TAG, "quoteJsonToContentVals: " +
@@ -69,7 +74,6 @@ public class Utils {
                                         " not found");
                                 batchOperations = null;
                             }
-
                         }
                     }
                 }
@@ -102,8 +106,7 @@ public class Utils {
         return change;
     }
 
-    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject) {
-        Log.d(LOG_TAG, "buildBatchOperation called");
+    public static ContentProviderOperation buildBatchOperation(JSONObject jsonObject, Context context) {
         ContentProviderOperation.Builder builder = ContentProviderOperation.newInsert(
                 QuoteProvider.Quotes.CONTENT_URI);
 
@@ -116,8 +119,25 @@ public class Utils {
             e.printStackTrace();
         }
 
+//        Cursor c = context.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+//                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+//                new String[]{symbol}, null);
+//
+//        if (c != null && c.getCount() != 0) {
+//            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+//                // do what you need with the cursor here
+//                Log.d(LOG_TAG, "c is not null c=" + c.getCount());
+//                String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+//                if (stock.equals(symbol)) {
+//                    return null;
+//                }
+//            }
+//        }
+//
+//        c.close();
+
         if (bidPrice == null || bidPrice.equals("null")) {
-            Log.d(LOG_TAG, "buildBatchOperation: " + symbol + " not found");
+            Log.d(LOG_TAG, "buildBatchOperation() " + symbol + " not found");
             return null;
         } else {
             try {
@@ -133,7 +153,7 @@ public class Utils {
                 } else {
                     builder.withValue(QuoteColumns.ISUP, 1);
                 }
-
+                Log.d(LOG_TAG, "buildBatchOperation() " + symbol + " found");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
