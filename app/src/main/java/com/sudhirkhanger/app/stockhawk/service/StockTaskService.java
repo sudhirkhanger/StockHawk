@@ -37,6 +37,7 @@ public class StockTaskService extends GcmTaskService {
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
+    private String stockInput;
 
     public StockTaskService() {
     }
@@ -104,7 +105,8 @@ public class StockTaskService extends GcmTaskService {
             Log.d(LOG_TAG, "param add");
             isUpdate = false;
             // get symbol from params.getExtra and build query
-            String stockInput = params.getExtras().getString("symbol");
+//            String stockInput = params.getExtras().getString("symbol");
+            stockInput = params.getExtras().getString("symbol");
             try {
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
             } catch (UnsupportedEncodingException e) {
@@ -135,16 +137,35 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
 
-                    if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
-                        Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
-                        mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                                Utils.quoteJsonToContentVals(getResponse, mContext));
+                    Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+                            new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+                            new String[]{stockInput}, null);
+
+                    if (c != null && c.getCount() != 0) {
+//                        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+//                            // do what you need with the cursor here
+//                            String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+//                            Log.d(LOG_TAG, "stock = " + stock + " symbol = " + symbol);
+//                            if (stock.equals(symbol)) {
+//                                Log.d(LOG_TAG, "buildBatchOperation null");
+//                                return null;
+//                            }
+//                        }
+                        return result;
                     } else {
-                        Intent intent = new Intent("stock_not_found");
-                        intent.putExtra("stock_msg", "Stock Not Found");
-                        LocalBroadcastManager.getInstance(this)
-                                .sendBroadcast(intent);
+                        if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
+                            Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
+                            mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                                    Utils.quoteJsonToContentVals(getResponse, mContext));
+                        } else {
+                            Intent intent = new Intent("stock_not_found");
+                            intent.putExtra("stock_msg", "Stock Not Found");
+                            LocalBroadcastManager.getInstance(this)
+                                    .sendBroadcast(intent);
+                        }
                     }
+
+                    if (c != null) c.close();
 
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(LOG_TAG, "Error applying batch insert", e);
@@ -153,7 +174,6 @@ public class StockTaskService extends GcmTaskService {
                 e.printStackTrace();
             }
         }
-
         return result;
     }
 }

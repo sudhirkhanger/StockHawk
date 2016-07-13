@@ -37,13 +37,11 @@ public class Utils {
                     jsonObject = jsonObject.getJSONObject("results")
                             .getJSONObject("quote");
 
-                    Log.d(LOG_TAG, "jsonObject is " + jsonObject.toString());
-
                     ContentProviderOperation contentProviderOperation =
                             buildBatchOperation(jsonObject, context);
 
                     if (contentProviderOperation != null) {
-                        Log.d(LOG_TAG, "quoteJsonToContentVals() reached 45");
+                        Log.d(LOG_TAG, "quoteJsonToContentVals() reached 44");
                         batchOperations.add(contentProviderOperation);
                     } else {
                         Log.d(LOG_TAG, "quoteJsonToContentVals: " +
@@ -66,7 +64,7 @@ public class Utils {
                                     buildBatchOperation(jsonObject, context);
 
                             if (contentProviderOperation != null) {
-                                Log.d(LOG_TAG, "quoteJsonToContentVals() reached 66");
+                                Log.d(LOG_TAG, "quoteJsonToContentVals() reached 69");
                                 batchOperations.add(contentProviderOperation);
                             } else {
                                 Log.d(LOG_TAG, "quoteJsonToContentVals: " +
@@ -124,11 +122,13 @@ public class Utils {
 //                new String[]{symbol}, null);
 //
 //        if (c != null && c.getCount() != 0) {
+//            Log.d(LOG_TAG, "cursor is not null c = " + c.getCount());
 //            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 //                // do what you need with the cursor here
-//                Log.d(LOG_TAG, "c is not null c=" + c.getCount());
 //                String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
+//                Log.d(LOG_TAG, "stock = " + stock + " symbol = " + symbol);
 //                if (stock.equals(symbol)) {
+//                    Log.d(LOG_TAG, "buildBatchOperation null");
 //                    return null;
 //                }
 //            }
