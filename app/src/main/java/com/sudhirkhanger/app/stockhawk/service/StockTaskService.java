@@ -137,11 +137,11 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
 
-                    Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-                            new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-                            new String[]{stockInput}, null);
-
-                    if (c != null && c.getCount() != 0) {
+//                    Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
+//                            new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
+//                            new String[]{stockInput}, null);
+//
+//                    if (c != null && c.getCount() != 0) {
 //                        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
 //                            // do what you need with the cursor here
 //                            String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
@@ -151,21 +151,21 @@ public class StockTaskService extends GcmTaskService {
 //                                return null;
 //                            }
 //                        }
-                        return result;
+//                        return result;
+//                    } else {
+                    if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
+                        Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
+                        mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
+                                Utils.quoteJsonToContentVals(getResponse, mContext));
                     } else {
-                        if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
-                            Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
-                            mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
-                                    Utils.quoteJsonToContentVals(getResponse, mContext));
-                        } else {
-                            Intent intent = new Intent("stock_not_found");
-                            intent.putExtra("stock_msg", "Stock Not Found");
-                            LocalBroadcastManager.getInstance(this)
-                                    .sendBroadcast(intent);
-                        }
+                        Intent intent = new Intent("stock_not_found");
+                        intent.putExtra("stock_msg", "Stock Not Found");
+                        LocalBroadcastManager.getInstance(this)
+                                .sendBroadcast(intent);
                     }
+//                    }
 
-                    if (c != null) c.close();
+//                    if (c != null) c.close();
 
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(LOG_TAG, "Error applying batch insert", e);
