@@ -45,6 +45,7 @@
 
         <activity
             android:name=".ui.MyStockGraphActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:parentActivityName=".ui.MyStocksActivity"
             android:theme="@style/Theme.AppCompat.Light">
             <meta-data
