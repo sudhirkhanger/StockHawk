@@ -13,4 +13,5 @@
     <string name="title_activity_my_stock_graph">MyStockGraphActivity</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
+    <string name="add_stock_symbol">Add Stock Symbol</string>
 </resources>
