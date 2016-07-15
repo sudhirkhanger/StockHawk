@@ -117,25 +117,6 @@ public class Utils {
             e.printStackTrace();
         }
 
-//        Cursor c = context.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-//                new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-//                new String[]{symbol}, null);
-//
-//        if (c != null && c.getCount() != 0) {
-//            Log.d(LOG_TAG, "cursor is not null c = " + c.getCount());
-//            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-//                // do what you need with the cursor here
-//                String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
-//                Log.d(LOG_TAG, "stock = " + stock + " symbol = " + symbol);
-//                if (stock.equals(symbol)) {
-//                    Log.d(LOG_TAG, "buildBatchOperation null");
-//                    return null;
-//                }
-//            }
-//        }
-//
-//        c.close();
-
         if (bidPrice == null || bidPrice.equals("null")) {
             Log.d(LOG_TAG, "buildBatchOperation() " + symbol + " not found");
             return null;

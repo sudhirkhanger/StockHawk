@@ -137,22 +137,6 @@ public class StockTaskService extends GcmTaskService {
                                 null, null);
                     }
 
-//                    Cursor c = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
-//                            new String[]{QuoteColumns.SYMBOL}, QuoteColumns.SYMBOL + "= ?",
-//                            new String[]{stockInput}, null);
-//
-//                    if (c != null && c.getCount() != 0) {
-//                        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-//                            // do what you need with the cursor here
-//                            String stock = c.getString(c.getColumnIndex(QuoteColumns.SYMBOL));
-//                            Log.d(LOG_TAG, "stock = " + stock + " symbol = " + symbol);
-//                            if (stock.equals(symbol)) {
-//                                Log.d(LOG_TAG, "buildBatchOperation null");
-//                                return null;
-//                            }
-//                        }
-//                        return result;
-//                    } else {
                     if (Utils.quoteJsonToContentVals(getResponse, mContext) != null) {
                         Log.d(LOG_TAG, "quoteJsonToContentVals() called 139");
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
@@ -163,9 +147,6 @@ public class StockTaskService extends GcmTaskService {
                         LocalBroadcastManager.getInstance(this)
                                 .sendBroadcast(intent);
                     }
-//                    }
-
-//                    if (c != null) c.close();
 
                 } catch (RemoteException | OperationApplicationException e) {
                     Log.e(LOG_TAG, "Error applying batch insert", e);

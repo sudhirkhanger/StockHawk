@@ -28,6 +28,13 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class QuoteDeserializer implements JsonDeserializer<Stock> {
+
+    public static final String QUERY = "query";
+    public static final String RESULTS = "results";
+    public static final String QUOTE = "quote";
+    public static final String DATE = "Date";
+    public static final String CLOSE = "Close";
+
     @Override
     public Stock deserialize(JsonElement json,
                              Type typeOfT,
@@ -39,21 +46,21 @@ public class QuoteDeserializer implements JsonDeserializer<Stock> {
         try {
             JsonObject queryObject = json
                     .getAsJsonObject()
-                    .get("query")
+                    .get(QUERY)
                     .getAsJsonObject();
 
             JsonElement quoteElement = queryObject
-                    .get("results")
+                    .get(RESULTS)
                     .getAsJsonObject()
-                    .get("quote");
+                    .get(QUOTE);
 
             JsonArray quoteArray = quoteElement.getAsJsonArray();
 
             for (int i = 0; i < quoteArray.size(); i++) {
                 final JsonElement stockItemElement = quoteArray.get(i);
 
-                final JsonElement dateElement = stockItemElement.getAsJsonObject().get("Date");
-                final JsonElement closeElement = stockItemElement.getAsJsonObject().get("Close");
+                final JsonElement dateElement = stockItemElement.getAsJsonObject().get(DATE);
+                final JsonElement closeElement = stockItemElement.getAsJsonObject().get(CLOSE);
                 final String date = dateElement.getAsString();
                 final String close = closeElement.getAsString();
 
