@@ -36,7 +36,6 @@ import com.sudhirkhanger.app.stockhawk.rest.StockService;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,8 +56,6 @@ public class MyStockGraphActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_my_stock_graph);
-
-        ButterKnife.bind(this);
 
         lineChart = (LineChart) findViewById(R.id.linechart);
 
