@@ -144,7 +144,7 @@ public class StockTaskService extends GcmTaskService {
                                 Utils.quoteJsonToContentVals(getResponse, mContext));
                     } else {
                         Intent intent = new Intent(KEY_STOCK_NOT_FOUND);
-                        intent.putExtra(KEY_STOCK_MSG, getString(R.string.stock_not_found));
+                        intent.putExtra(KEY_STOCK_MSG, mContext.getResources().getString(R.string.stock_not_found));
                         LocalBroadcastManager.getInstance(this)
                                 .sendBroadcast(intent);
                     }

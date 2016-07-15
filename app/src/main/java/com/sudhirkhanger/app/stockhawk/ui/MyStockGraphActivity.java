@@ -45,6 +45,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyStockGraphActivity extends AppCompatActivity {
 
     private static final String BASE_URL = "https://query.yahooapis.com/";
+    private static final String startDate = "2015-07-15";
+    private static final String endDate = "2016-07-15";
     private Call<Stock> mStockServiceCall;
     private Stock mStock;
     private List<Stock.StockItem> mStockItemList;
@@ -75,9 +77,6 @@ public class MyStockGraphActivity extends AppCompatActivity {
                 .build();
 
         StockService.StockYql stockYql = retrofit.create(StockService.StockYql.class);
-
-        String startDate = "2015-07-15";
-        String endDate = "2016-07-15";
 
         String query = "select * from yahoo.finance.historicaldata where symbol = \'" + symbol + "\' and startDate = \'" + startDate + "\' and endDate = \'" + endDate + "\'";
 
