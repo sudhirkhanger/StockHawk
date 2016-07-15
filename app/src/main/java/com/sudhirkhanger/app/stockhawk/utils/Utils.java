@@ -20,6 +20,15 @@ import java.util.ArrayList;
  */
 public class Utils {
 
+    public static final String CHANGEIN_PERCENT = "ChangeinPercent";
+    public static final String CHANGE = "Change";
+    public static final String NULL = "null";
+    public static final String BID = "Bid";
+    public static final String QUERY = "query";
+    public static final String COUNT = "count";
+    public static final String RESULTS = "results";
+    public static final String QUOTE = "quote";
+    public static final String SYMBOL = "symbol";
     private static String LOG_TAG = Utils.class.getSimpleName();
 
     public static boolean showPercent = true;
@@ -31,11 +40,11 @@ public class Utils {
         try {
             jsonObject = new JSONObject(JSON);
             if (jsonObject != null && jsonObject.length() != 0) {
-                jsonObject = jsonObject.getJSONObject("query");
-                int count = Integer.parseInt(jsonObject.getString("count"));
+                jsonObject = jsonObject.getJSONObject(QUERY);
+                int count = Integer.parseInt(jsonObject.getString(COUNT));
                 if (count == 1) {
-                    jsonObject = jsonObject.getJSONObject("results")
-                            .getJSONObject("quote");
+                    jsonObject = jsonObject.getJSONObject(RESULTS)
+                            .getJSONObject(QUOTE);
 
                     ContentProviderOperation contentProviderOperation =
                             buildBatchOperation(jsonObject, context);
@@ -51,8 +60,8 @@ public class Utils {
                     }
 
                 } else {
-                    resultsArray = jsonObject.getJSONObject("results")
-                            .getJSONArray("quote");
+                    resultsArray = jsonObject.getJSONObject(RESULTS)
+                            .getJSONArray(QUOTE);
 
                     Log.d(LOG_TAG, "jsonObject is " + resultsArray.toString());
 
@@ -111,22 +120,22 @@ public class Utils {
         String bidPrice = null;
         String symbol = "";
         try {
-            bidPrice = jsonObject.getString("Bid");
-            symbol = jsonObject.getString("symbol");
+            bidPrice = jsonObject.getString(BID);
+            symbol = jsonObject.getString(SYMBOL);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        if (bidPrice == null || bidPrice.equals("null")) {
+        if (bidPrice == null || bidPrice.equals(NULL)) {
             Log.d(LOG_TAG, "buildBatchOperation() " + symbol + " not found");
             return null;
         } else {
             try {
-                String change = jsonObject.getString("Change");
+                String change = jsonObject.getString(CHANGE);
                 builder.withValue(QuoteColumns.SYMBOL, symbol);
                 builder.withValue(QuoteColumns.BIDPRICE, truncateBidPrice(bidPrice));
                 builder.withValue(QuoteColumns.PERCENT_CHANGE, truncateChange(
-                        jsonObject.getString("ChangeinPercent"), true));
+                        jsonObject.getString(CHANGEIN_PERCENT), true));
                 builder.withValue(QuoteColumns.CHANGE, truncateChange(change, false));
                 builder.withValue(QuoteColumns.ISCURRENT, 1);
                 if (change.charAt(0) == '-') {

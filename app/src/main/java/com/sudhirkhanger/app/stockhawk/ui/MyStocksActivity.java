@@ -46,6 +46,12 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
 
     public static final String ACTION_DATA_UPDATED =
             "com.sudhirkhanger.app.stockhawk.ACTION_DATA_UPDATED";
+    public static final String KEY_TAG = "tag";
+    public static final String INIT = "init";
+    public static final String KEY_STOCK_SYMBOL = "stock_symbol";
+    public static final String KEY_SYMBOL = "symbol";
+    public static final String ADD = "add";
+    public static final String PERIODIC = "periodic";
     private CharSequence mTitle;
     private Intent mServiceIntent;
     private ItemTouchHelper mItemTouchHelper;
@@ -67,7 +73,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         mServiceIntent = new Intent(this, StockIntentService.class);
         if (savedInstanceState == null) {
             // Run the initialize task service so that some stocks appear upon an empty database
-            mServiceIntent.putExtra("tag", "init");
+            mServiceIntent.putExtra(KEY_TAG, INIT);
             if (Utils.isConnected(mContext)) {
                 Log.d(LOG_TAG, "StockTaskService Intent Sent");
                 startService(mServiceIntent);
@@ -89,8 +95,8 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                         Intent intent = new Intent(v.getContext(), MyStockGraphActivity.class);
                         mCursor = mCursorAdapter.getCursor();
                         mCursor.moveToPosition(position);
-                        String str = mCursor.getString(mCursor.getColumnIndex("symbol"));
-                        intent.putExtra("stock_symbol", str);
+                        String str = mCursor.getString(mCursor.getColumnIndex(QuoteColumns.SYMBOL));
+                        intent.putExtra(KEY_STOCK_SYMBOL, str);
                         startActivity(intent);
                     }
                 }));
@@ -118,14 +124,14 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
                                             new String[]{capitalizeInput}, null);
                                     if (c != null && c.getCount() != 0) {
                                         Toast toast =
-                                                Toast.makeText(MyStocksActivity.this, "This stock is already saved!",
+                                                Toast.makeText(MyStocksActivity.this, R.string.stock_exist,
                                                         Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.CENTER, Gravity.CENTER, 0);
                                         toast.show();
                                     } else {
                                         // Add the stock to DB
-                                        mServiceIntent.putExtra("tag", "add");
-                                        mServiceIntent.putExtra("symbol", capitalizeInput);
+                                        mServiceIntent.putExtra(KEY_TAG, ADD);
+                                        mServiceIntent.putExtra(KEY_SYMBOL, capitalizeInput);
                                         startService(mServiceIntent);
                                     }
                                     if (c != null) c.close();
@@ -148,7 +154,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
         if (Utils.isConnected(mContext)) {
             long period = 3600L;
             long flex = 10L;
-            String periodicTag = "periodic";
+            String periodicTag = PERIODIC;
 
             // create a periodic task to pull stocks once every hour after the app has been opened. This
             // is so Widget data stays up to date.
@@ -170,7 +176,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            String message = intent.getStringExtra("stock_msg");
+            String message = intent.getStringExtra(StockTaskService.KEY_STOCK_MSG);
             Toast toast =
                     Toast.makeText(MyStocksActivity.this, message,
                             Toast.LENGTH_LONG);
@@ -183,7 +189,7 @@ public class MyStocksActivity extends AppCompatActivity implements LoaderManager
     public void onResume() {
         super.onResume();
         LocalBroadcastManager.getInstance(this)
-                .registerReceiver(mMessageReceiver, new IntentFilter("stock_not_found"));
+                .registerReceiver(mMessageReceiver, new IntentFilter(StockTaskService.KEY_STOCK_NOT_FOUND));
         getLoaderManager().restartLoader(CURSOR_LOADER_ID, null, this);
     }
 

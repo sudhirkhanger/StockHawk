@@ -60,7 +60,7 @@ public class MyStockGraphActivity extends AppCompatActivity {
         lineChart = (LineChart) findViewById(R.id.linechart);
 
         Intent intent = getIntent();
-        String symbol = intent.getStringExtra("stock_symbol");
+        String symbol = intent.getStringExtra(MyStocksActivity.KEY_STOCK_SYMBOL);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(symbol);
         }
@@ -76,8 +76,8 @@ public class MyStockGraphActivity extends AppCompatActivity {
 
         StockService.StockYql stockYql = retrofit.create(StockService.StockYql.class);
 
-        String startDate = "2015-06-10";
-        String endDate = "2016-06-10";
+        String startDate = "2015-07-15";
+        String endDate = "2016-07-15";
 
         String query = "select * from yahoo.finance.historicaldata where symbol = \'" + symbol + "\' and startDate = \'" + startDate + "\' and endDate = \'" + endDate + "\'";
 
@@ -120,10 +120,10 @@ public class MyStockGraphActivity extends AppCompatActivity {
             yVals.add(new Entry(Float.valueOf(mStockItemList.get(i).getClose()), i));
         }
 
-        LineDataSet dataSet = new LineDataSet(yVals, "Close");
+        LineDataSet dataSet = new LineDataSet(yVals, getString(R.string.close));
 
         LineData lineData = new LineData(xVals, dataSet);
-        lineChart.setDescription("Closing values over time");
+        lineChart.setDescription(getString(R.string.close_over_time));
         dataSet.setDrawFilled(true);
         lineChart.setData(lineData);
         lineChart.animateY(5000);

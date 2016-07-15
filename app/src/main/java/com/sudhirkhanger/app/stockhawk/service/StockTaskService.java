@@ -13,8 +13,10 @@ import android.util.Log;
 import com.google.android.gms.gcm.GcmNetworkManager;
 import com.google.android.gms.gcm.GcmTaskService;
 import com.google.android.gms.gcm.TaskParams;
+import com.sudhirkhanger.app.stockhawk.R;
 import com.sudhirkhanger.app.stockhawk.model.QuoteColumns;
 import com.sudhirkhanger.app.stockhawk.model.QuoteProvider;
+import com.sudhirkhanger.app.stockhawk.ui.MyStocksActivity;
 import com.sudhirkhanger.app.stockhawk.utils.Utils;
 
 import java.io.IOException;
@@ -31,13 +33,14 @@ import okhttp3.Response;
  * and is used for the initialization and adding task as well.
  */
 public class StockTaskService extends GcmTaskService {
+    public static final String KEY_STOCK_NOT_FOUND = "stock_not_found";
+    public static final String KEY_STOCK_MSG = "stock_msg";
     private String LOG_TAG = StockTaskService.class.getSimpleName();
 
     private OkHttpClient client = new OkHttpClient();
     private Context mContext;
     private StringBuilder mStoredSymbols = new StringBuilder();
     private boolean isUpdate;
-    private String stockInput;
 
     public StockTaskService() {
     }
@@ -71,7 +74,7 @@ public class StockTaskService extends GcmTaskService {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-        if (params.getTag().equals("init") || params.getTag().equals("periodic")) {
+        if (params.getTag().equals(MyStocksActivity.INIT) || params.getTag().equals(MyStocksActivity.PERIODIC)) {
             Log.d(LOG_TAG, "init or periodic");
             isUpdate = true;
             initQueryCursor = mContext.getContentResolver().query(QuoteProvider.Quotes.CONTENT_URI,
@@ -91,7 +94,7 @@ public class StockTaskService extends GcmTaskService {
                 initQueryCursor.moveToFirst();
                 for (int i = 0; i < initQueryCursor.getCount(); i++) {
                     mStoredSymbols.append("\"" +
-                            initQueryCursor.getString(initQueryCursor.getColumnIndex("symbol")) + "\",");
+                            initQueryCursor.getString(initQueryCursor.getColumnIndex(QuoteColumns.SYMBOL)) + "\",");
                     initQueryCursor.moveToNext();
                 }
                 mStoredSymbols.replace(mStoredSymbols.length() - 1, mStoredSymbols.length(), ")");
@@ -101,12 +104,11 @@ public class StockTaskService extends GcmTaskService {
                     e.printStackTrace();
                 }
             }
-        } else if (params.getTag().equals("add")) {
+        } else if (params.getTag().equals(MyStocksActivity.ADD)) {
             Log.d(LOG_TAG, "param add");
             isUpdate = false;
             // get symbol from params.getExtra and build query
-//            String stockInput = params.getExtras().getString("symbol");
-            stockInput = params.getExtras().getString("symbol");
+            String stockInput = params.getExtras().getString(QuoteColumns.SYMBOL);
             try {
                 urlStringBuilder.append(URLEncoder.encode("\"" + stockInput + "\")", "UTF-8"));
             } catch (UnsupportedEncodingException e) {
@@ -122,7 +124,6 @@ public class StockTaskService extends GcmTaskService {
         int result = GcmNetworkManager.RESULT_FAILURE;
 
         if (urlStringBuilder != null) {
-            Log.d(LOG_TAG, "urlStringBuilder not null always ");
             urlString = urlStringBuilder.toString();
             Log.d(LOG_TAG, "urlString " + urlString);
             try {
@@ -142,8 +143,8 @@ public class StockTaskService extends GcmTaskService {
                         mContext.getContentResolver().applyBatch(QuoteProvider.AUTHORITY,
                                 Utils.quoteJsonToContentVals(getResponse, mContext));
                     } else {
-                        Intent intent = new Intent("stock_not_found");
-                        intent.putExtra("stock_msg", "Stock Not Found");
+                        Intent intent = new Intent(KEY_STOCK_NOT_FOUND);
+                        intent.putExtra(KEY_STOCK_MSG, getString(R.string.stock_not_found));
                         LocalBroadcastManager.getInstance(this)
                                 .sendBroadcast(intent);
                     }
